@@ -12,7 +12,7 @@ const [cartvalue, setCartValue] = useState(0);
   const handleClick = (index) => {
     setActiveIndex(index);
   };
-const { getTotalCartItems } = useContext(ShopContext);
+//const { getTotalCartItems } = useContext(ShopContext);
 
   const getLinkStyle = (index) => {
     return {
@@ -73,7 +73,7 @@ const { getTotalCartItems } = useContext(ShopContext);
         }
           <Link to="/cart" className="flex">
             <img src={cartimage} alt="cartimage" className="h-10" />
-            <div className="bg-orange-500 text-white h-5 w-5 rounded-full text-center flex justify-center items-center mr-10">{getTotalCartItems()}</div>
+            <div className="bg-orange-500 text-white h-5 w-5 rounded-full text-center flex justify-center items-center mr-10">{/* {getTotalCartItems()} */}</div>
           </Link>
         </div>
       </div>

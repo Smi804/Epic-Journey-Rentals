@@ -1,5 +1,4 @@
 
-import './App.css'
 import { BrowserRouter as Router,Routes,Route }   from 'react-router-dom'
 import Home from './pages/Home'
 import AboutUs from './pages/AboutUs';
@@ -10,6 +9,7 @@ import Auth from './pages/Auth';
 import HowItWorks from './pages/HowItWorks';
 import Register from './pages/Register';
 import Items from './pages/Items'
+import Listings from './pages/Listings';
 import ItemsDetails from './pages/ItemsDetails'
 import Sidebar from './Comps/Sidebar'
 import { useState } from 'react';
@@ -24,8 +24,8 @@ const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <>
-      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-      <div className="pt-16"> {/* Push page content below fixed topbar */}
+      {/* <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} /> */}
+      <div> {/* Push page content below fixed topbar */}
          <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<AboutUs />} />
@@ -33,6 +33,7 @@ const [isSidebarOpen, setSidebarOpen] = useState(false);
           <Route path="/rent" element={<Rent />} />
           <Route path="/lease" element={<Lease />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/listings" element={<Listings />} />
           <Route path="/register" element={<Register />} />
           <Route path="/howitworks" element={<HowItWorks />} />
           <Route path="/items" element={<Items />} />
