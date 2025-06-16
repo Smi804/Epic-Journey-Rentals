@@ -17,10 +17,10 @@ const app = express();
 app.use(cors());
 
 app.use(express.json());
- app.use(verifyToken)
+// app.use(verifyToken)
 
 app.use('/api/auth', authRoutes);
-app.use('/api/listings', listingRoutes);
+app.use('/api/listings',verifyToken, listingRoutes);
 
 
 const PORT = process.env.PORT || 5000;
