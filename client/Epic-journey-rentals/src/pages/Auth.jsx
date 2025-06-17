@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { User, Mail, Lock, Eye, EyeOff, ArrowLeft, CheckCircle, AlertCircle, Phone, MapPin } from "lucide-react"
+import {toast,Toaster} from "react-hot-toast"
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true)
@@ -12,6 +13,7 @@ const Auth = () => {
   const [error, setError] = useState("")
   const [success, setSuccess] = useState("")
   const navigate = useNavigate()
+  
 
   // Form states
   const [loginData, setLoginData] = useState({
@@ -94,7 +96,28 @@ const Auth = () => {
 
     try {
       // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+    
+    const res = await fetch("http://localhost:5000/api/auth/login", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify(loginData),
+})
+
+const data = await res.json()
+
+if (!res.ok) throw new Error(data.message || "Login failed")
+
+// Save token (for later use)
+localStorage.setItem("token", data.token)
+localStorage.setItem("user", JSON.stringify(data.user))
+
+toast.success("(Login successful! Redirecting...")
+setTimeout(() => {
+  navigate("/listings")
+}, 1000)
+      /*  await new Promise((resolve) => setTimeout(resolve, 1500))
 
       // Here you would typically make an API call to your backend
       console.log("Login data:", loginData)
@@ -103,9 +126,9 @@ const Auth = () => {
       setSuccess("Login successful! Redirecting...")
       setTimeout(() => {
         navigate("/listings") // Redirect to listings page
-      }, 1000)
+      }, 1000) */
     } catch (err) {
-      setError("Invalid email or password. Please try again.")
+      toast.error("Invalid email or password")
     } finally {
       setLoading(false)
     }
@@ -123,8 +146,37 @@ const Auth = () => {
     setError("")
 
     try {
+
+        const res = await fetch("http://localhost:5000/api/auth/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fullname: registerData.fullName,
+            email: registerData.email,
+            phone: registerData.phone,
+            location: registerData.location,
+            password: registerData.password,
+            role: registerData.userType
+          }),
+        })
+
+        const data = await res.json()
+
+        if (!res.ok) throw new Error(data.message || "Registration failed")
+
+        toast.success(`${registerData.fullName} Registered successfully`)
+        setTimeout(() => {
+          navigate("/auth") // Redirect to login page
+        }, 1500)
+        setIsLogin(true);
+       
+
+
+      
       // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+     /*  await new Promise((resolve) => setTimeout(resolve, 2000))
 
       // Here you would typically make an API call to your backend
       console.log("Register data:", registerData)
@@ -133,9 +185,9 @@ const Auth = () => {
       setSuccess("Registration successful! Welcome to Epic Journey Rentals!")
       setTimeout(() => {
         navigate("/listings") // Redirect to listings page
-      }, 1500)
+      }, 1500) */
     } catch (err) {
-      setError("Registration failed. Please try again.")
+      toast.error(`Registration failed:${err.message}`)
     } finally {
       setLoading(false)
     }

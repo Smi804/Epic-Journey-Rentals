@@ -13,6 +13,7 @@ import Listings from './pages/Listings';
 import ItemsDetails from './pages/ItemsDetails'
 import Sidebar from './Comps/Sidebar'
 import { useState } from 'react';
+import { Toaster } from 'react-hot-toast';
 import { FaBars } from 'react-icons/fa';
 
 
@@ -24,8 +25,9 @@ const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <>
+    
       {/* <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} /> */}
-      <div> {/* Push page content below fixed topbar */}
+      <div>
          <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<AboutUs />} />

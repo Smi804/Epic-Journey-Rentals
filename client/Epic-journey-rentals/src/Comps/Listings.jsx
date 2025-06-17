@@ -1,5 +1,3 @@
-// src/pages/Listings.jsx
-
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { MapPin, Loader } from "lucide-react"
@@ -11,21 +9,9 @@ const Listings = () => {
 
   useEffect(() => {
     const fetchListings = async () => {
-      setLoading(true);
-      const token = localStorage.getItem("token") || null;
-      if (!token) {
-        toast.error("You must be logged in to view listings")
-        return
-      }
       try {
-        const res = await fetch("http://localhost:5000/api/listings",{
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
-          },
-        });
+        const res = await fetch("http://localhost:5000/api/listings")
         const data = await res.json()
-        if (!res.ok) throw new Error(data.message || "Failed to fetch listings")  
         setListings(data)
       } catch (err) {
         toast.error("Failed to load listings")
