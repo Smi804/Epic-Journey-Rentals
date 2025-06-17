@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Navbar from '../Comps/Navbar';
 import api from '../api/axios';
 
 const Listings = () => {
@@ -17,7 +18,8 @@ const Listings = () => {
     fetchListings();
   }, []);
 
-  return (
+  return (<>
+    <Navbar/>
     <div className="p-4">
       <h2 className="text-xl font-bold mb-4">All Listings</h2>
       {listings.map(listing => (
@@ -27,8 +29,9 @@ const Listings = () => {
           <p className="text-sm text-gray-600">{listing.category} - ${listing.price}</p>
         </div>
       ))}
-    </div>
+    </div>  </>
   );
+
 };
 
 export default Listings;

@@ -6,21 +6,17 @@ import Contact from './pages/Contact';
 import Rent from './pages/Rent';
 import Lease from './pages/Lease';
 import Auth from './pages/Auth';
-import HowItWorks from './pages/HowItWorks';
 import Register from './pages/Register';
-import Items from './pages/Items'
 import Listings from './pages/Listings';
 import ItemsDetails from './pages/ItemsDetails'
-import Sidebar from './Comps/Sidebar'
 import { useState } from 'react';
-import { FaBars } from 'react-icons/fa';
 
 
 
 function App() {
 const [isSidebarOpen, setSidebarOpen] = useState(false);
 
-  const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
+ 
 
   return (
     <>
@@ -35,8 +31,6 @@ const [isSidebarOpen, setSidebarOpen] = useState(false);
           <Route path="/auth" element={<Auth />} />
           <Route path="/listings" element={<Listings />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/howitworks" element={<HowItWorks />} />
-          <Route path="/items" element={<Items />} />
           <Route path="/items/:id" element={<ItemsDetails />} />
         </Routes>
       </div>
