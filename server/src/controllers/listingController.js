@@ -63,19 +63,22 @@ export const updateListingById = async (req, res) => {
   }
 }
 
-
-
 export const getListingsByOwner = async (req, res) => {
   try {
-    const listings = await Listing.find({ owner: req.user.id }).populate('owner', 'name email');
-    res.json(listings);
-    if(!listings) {
+    console.log("Looking for listings for owner:", req.user)
+
+    const listings = await Listing.find({owner: req.user.id});
+    if (!listings || listings.length === 0) { 
       return res.status(404).json({ message: 'No listings found for this owner' });
     }
+    res.json(listings)
   } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err.message });
+    console.error(" Error in getListingsByOwner:", err)
+    res.status(500).json({ message: "Server error", error: err.message })
   }
-};
+}
+
+
 
 
 export const getListingsByCategory = async (req, res) => {
@@ -146,4 +149,4 @@ export const getListingsByAvailability = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
-};    
+};

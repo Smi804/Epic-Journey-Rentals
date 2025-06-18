@@ -1,45 +1,36 @@
-import express from 'express';
-import verifyToken from '../middleware/auth.js';
-import { createListing, getAllListings,getListingById ,deleteListingById,getListingsByAvailability,getListingsByCategory,getListingsByOwner,updateListingById,getListingsByLocation,getListingsByPriceRange, searchListings } from '../controllers/listingController.js';
+import express from 'express'
+import verifyToken from '../middleware/auth.js'
+import { requireRole } from '../middleware/role.js'
+import {
+  createListing,
+  getAllListings,
+  getListingById,
+  deleteListingById,
+  getListingsByAvailability,
+  getListingsByCategory,
+  getListingsByOwner,
+  updateListingById,
+  getListingsByLocation,
+  getListingsByPriceRange,
+  searchListings,
+} from '../controllers/listingController.js'
 
-const router = express.Router();
-
-router.post('/', verifyToken, createListing); // Protected
-
-
-// 📌 Create new listing (only logged-in users)
-router.post('/', verifyToken, createListing);
-
-// 📌 Get all listings
-router.get('/', getAllListings);
-
-// 📌 Get listings by category
-router.get('/category/:category', getListingsByCategory);
-
-// 📌 Get listing by ID
-router.get('/:id', getListingById);
-
-// 📌 Update listing by ID (only logged-in users)
-router.put('/:id', verifyToken, updateListingById);
-
-// 📌 Delete listing by ID (only logged-in users)
-router.delete('/:id', verifyToken, deleteListingById);
-
-// 📌 Get listings created by logged-in user
-router.get('/owner/my', verifyToken, getListingsByOwner);
+const router = express.Router()
 
 
+router.post('/', verifyToken, requireRole('owner'), createListing)
 
-// 📌 Search listings by title
-router.get('/search/query', searchListings);
+router.get('/', getAllListings)
+router.get('/category/:category', getListingsByCategory)
+router.get('/:id', getListingById)
 
-// 📌 Filter by location
-router.get('/search/location', getListingsByLocation);
+router.put('/:id', verifyToken, requireRole('owner'), updateListingById)
+router.delete('/:id', verifyToken, requireRole('owner'), deleteListingById)
+router.get('/owner/listings', verifyToken, getListingsByOwner)
 
-// 📌 Filter by price range
-router.get('/search/price', getListingsByPriceRange);
+router.get('/search/query', searchListings)
+router.get('/search/location', getListingsByLocation)
+router.get('/search/price', getListingsByPriceRange)
+router.get('/search/availability', getListingsByAvailability)
 
-// 📌 Filter by availability dates
-router.get('/search/availability', getListingsByAvailability);  
-
-export default router;
+export default router

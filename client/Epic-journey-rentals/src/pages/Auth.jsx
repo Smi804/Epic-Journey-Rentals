@@ -115,7 +115,7 @@ localStorage.setItem("user", JSON.stringify(data.user))
 
 toast.success("(Login successful! Redirecting...")
 setTimeout(() => {
-  navigate("/listings")
+  navigate("/dashboard") // Redirect to dashboard
 }, 1000)
       /*  await new Promise((resolve) => setTimeout(resolve, 1500))
 
