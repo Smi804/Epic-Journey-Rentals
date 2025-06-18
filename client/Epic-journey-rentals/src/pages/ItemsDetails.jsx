@@ -62,7 +62,7 @@ const ItemsDetails = () => {
         setListing(data)
       } catch (err) {
         toast.error(err.message || "Listing not found")
-        navigate("/listings")
+        navigate("/dashboard")
       } finally {
         setLoading(false)
       }
@@ -110,8 +110,39 @@ const ItemsDetails = () => {
       toast.error("Please select booking dates")
       return
     }
-    toast.success("Booking request sent! Owner will contact you soon.")
-    setShowBookingModal(false)
+    setShowBookingModal(true);
+    try{
+      const token = localStorage.getItem("token")
+      const renter = JSON.parse(localStorage.getItem("user"))?._id
+      if (!token) {
+        toast.error("Please login to book an item")
+        navigate("/auth")
+        return
+      }
+      const res = fetch(`http://localhost:5000/api/bookings`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          listing: id,
+          renter:renter,
+          startDate: bookingDates.startDate,
+          endDate: bookingDates.endDate,
+          totalPrice: totalPrice + Math.round(totalPrice * 0.1), // Including service fee
+        }),
+      })
+      const data = res.json()
+      if (!res.ok) throw new Error(data.message || "Error creating booking request")
+      toast.success("Booking created successfully")
+      setShowBookingModal(false)
+      navigate("/renter/bookings")
+    }
+    catch (err) { 
+      toast.error("Error creating booking request", err.message || "Please try again later");
+    }
+    
   }
 
   const calculateDays = () => {
@@ -172,10 +203,10 @@ const ItemsDetails = () => {
     <>
       <Navbar />
       <div className="bg-gray-50 min-h-screen">
-        {/* Breadcrumb */}
+       
        
         <div className="max-w-7xl mx-auto px-4 py-8">
-          {/* Back Button */}
+       
           <button
             onClick={() => navigate(-1)}
             className="flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-6 transition-colors"

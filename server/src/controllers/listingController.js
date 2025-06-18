@@ -8,7 +8,7 @@ export const createListing = async (req, res) => {
     }
     res.status(201).json({ message: 'Listing created successfully', listing: newListing });
   } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err.message });
+    res.status(500).json({ message: 'my Server error', error: err.message });
   }
 };
 
