@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useState } from "react"
 import { useParams, useNavigate, Link } from "react-router-dom"
 import {
@@ -105,45 +103,48 @@ const ItemsDetails = () => {
     }
   }
 
-  const handleBooking = () => {
+  const handleBooking = async () => {
     if (!bookingDates.startDate || !bookingDates.endDate) {
       toast.error("Please select booking dates")
       return
     }
-    setShowBookingModal(true);
-    try{
-      const token = localStorage.getItem("token")
-      const renter = JSON.parse(localStorage.getItem("user"))?._id
-      if (!token) {
-        toast.error("Please login to book an item")
-        navigate("/auth")
-        return
-      }
-      const res = fetch(`http://localhost:5000/api/bookings`, {
+
+    const token = localStorage.getItem("token")
+    if (!token) {
+      toast.error("Please login to book an item")
+      navigate("/auth")
+      return
+    }
+
+    try {
+      setShowBookingModal(true)
+
+      const res = await fetch(`http://localhost:5000/api/bookings`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          listing: id,
-          renter:renter,
+          listingId: id,  // ✅ backend expects listingId, not listing
           startDate: bookingDates.startDate,
           endDate: bookingDates.endDate,
-          totalPrice: totalPrice + Math.round(totalPrice * 0.1), // Including service fee
+          totalPrice: totalPrice + Math.round(totalPrice * 0.1), // ✅ with service fee
         }),
       })
-      const data = res.json()
+
+      const data = await res.json()
+
       if (!res.ok) throw new Error(data.message || "Error creating booking request")
+
       toast.success("Booking created successfully")
       setShowBookingModal(false)
       navigate("/renter/bookings")
+    } catch (err) {
+      toast.error(err.message || "Error creating booking request. Please try again.")
     }
-    catch (err) { 
-      toast.error("Error creating booking request", err.message || "Please try again later");
-    }
-    
   }
+
 
   const calculateDays = () => {
     if (bookingDates.startDate && bookingDates.endDate) {
@@ -203,10 +204,10 @@ const ItemsDetails = () => {
     <>
       <Navbar />
       <div className="bg-gray-50 min-h-screen">
-       
-       
+
+
         <div className="max-w-7xl mx-auto px-4 py-8">
-       
+
           <button
             onClick={() => navigate(-1)}
             className="flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-6 transition-colors"
@@ -249,9 +250,8 @@ const ItemsDetails = () => {
                           <button
                             key={index}
                             onClick={() => setCurrentImageIndex(index)}
-                            className={`w-2 h-2 rounded-full transition-colors ${
-                              index === currentImageIndex ? "bg-white" : "bg-white/50"
-                            }`}
+                            className={`w-2 h-2 rounded-full transition-colors ${index === currentImageIndex ? "bg-white" : "bg-white/50"
+                              }`}
                           />
                         ))}
                       </div>
@@ -290,9 +290,8 @@ const ItemsDetails = () => {
                       <button
                         key={index}
                         onClick={() => setCurrentImageIndex(index)}
-                        className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-colors ${
-                          index === currentImageIndex ? "border-blue-500" : "border-gray-200"
-                        }`}
+                        className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-colors ${index === currentImageIndex ? "border-blue-500" : "border-gray-200"
+                          }`}
                       >
                         <img
                           src={image || "/placeholder.svg"}

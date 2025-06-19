@@ -186,11 +186,10 @@ const AboutUs = () => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`px-6 py-3 font-medium transition-colors ${
-                    activeTab === tab.id
-                      ? "text-blue-600 border-b-2 border-blue-600"
-                      : "text-gray-600 hover:text-blue-600"
-                  }`}
+                  className={`px-6 py-3 font-medium transition-colors ${activeTab === tab.id
+                    ? "text-blue-600 border-b-2 border-blue-600"
+                    : "text-gray-600 hover:text-blue-600"
+                    }`}
                 >
                   {tab.label}
                 </button>

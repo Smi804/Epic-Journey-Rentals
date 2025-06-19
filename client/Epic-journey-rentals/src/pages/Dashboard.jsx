@@ -8,11 +8,11 @@ import Footer from '../Comps/Footer'
 function Dashboard() {
   return (
     <>
-    <Navbar/>
-    <Listings/>
-    <FAQs/>
-    <Newsletter/>
-    <Footer />      
+      <Navbar />
+      <Listings />
+      <FAQs />
+      <Newsletter />
+      <Footer />
     </>
   )
 }

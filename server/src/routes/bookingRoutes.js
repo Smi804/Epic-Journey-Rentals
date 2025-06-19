@@ -3,14 +3,14 @@ import verifyToken from "../middleware/auth.js";
 import { requireRole } from "../middleware/role.js";
 import {
   createBooking,
-  getBookingsByRenter
- /*  getBookingById
-   */
+  getBookingsByRenter,
+  getBookingByOwner
 } from "../controllers/bookingController.js";
 
 const router = express.Router();
 router.post("/", verifyToken, requireRole("renter"), createBooking);
 router.get("/", verifyToken, requireRole("renter"), getBookingsByRenter);
+router.get("/:ownerId", verifyToken, requireRole("owner"), getBookingByOwner);
 /* router.get("/:id", verifyToken, getBookingById); */
 
 export default router;

@@ -99,7 +99,7 @@ const Home = () => {
                   <ArrowRight className="inline-block ml-2 w-5 h-5" />
                 </button>
               </Link>
-              
+
             </div>
             <p className="text-sm text-gray-500 italic">
               "Rent. Ride. Rest. Repeat — One Platform for All Your Adventure Needs."

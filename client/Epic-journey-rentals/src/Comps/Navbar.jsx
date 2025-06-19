@@ -1,5 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react"
+import logo from "../assets/logo.png"
 import {
   Menu,
   X,
@@ -110,9 +111,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 group">
-            <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
-              <span className="text-white font-bold text-lg">EJ</span>
-            </div>
+           <img src={logo} className="h-10 w-10" alt="logo" />
             <div className="hidden sm:block">
               <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
                 Epic Journey
@@ -308,7 +307,7 @@ const Navbar = () => {
                   Sign In
                 </Link>
                 <Link
-                  to="/auth"
+                  to="/"
                   className="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm font-medium rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-md hover:shadow-lg"
                 >
                   Get Started

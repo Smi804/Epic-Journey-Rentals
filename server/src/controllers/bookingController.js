@@ -1,3 +1,4 @@
+import { get } from "mongoose";
 import Booking from "../models/Booking.js";
 import Listing from "../models/Listing.js";
 
@@ -110,5 +111,59 @@ export const getBookingsByRenter = async (req, res) => {
   }
 }
 
+/* export const getBookingByOwner = async (req, res) => {
+  try {
+    const ownerId = req.user.id; 
+    const bookings = await Booking.find({ "listing.owner": ownerId })
+  .populate({
+    path: "listing",
+    match: { owner: ownerId },
+    select: "title price owner",
+  })
+  .populate("renter", "name email");
+  
+
+    res.status(200).json({
+      message: "Bookings fetched successfully",
+      bookings,
+    });
+  } catch (error) {
+    console.error("Error fetching bookings:", error);
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
+}                                
+ */
+
+export const getBookingByOwner = async (req, res) => {
+  try {
+    const ownerId = req.user.id; // from verifyToken middleware
+
+    // Fetch all bookings and populate listing and renter
+    const allBookings = await Booking.find()
+      .populate({
+        path: "listing",
+        match: { owner: ownerId }, // Only include listings owned by this owner
+        select: "title price owner", // Optional: include only needed fields
+      })
+      .populate("renter", "fullname email"); // Adjust fields as needed
+
+    // Filter out bookings where the listing was not matched (i.e., not owned by this owner)
+    const ownerBookings = allBookings.filter((booking) => booking.listing !== null);
+
+    res.status(200).json({
+      message: "Bookings fetched successfully",
+      bookings: ownerBookings,
+    });
+  } catch (error) {
+    console.error("Error fetching bookings for owner:", error);
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
 
 

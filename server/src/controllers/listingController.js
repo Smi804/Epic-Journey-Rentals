@@ -67,7 +67,7 @@ export const getListingsByOwner = async (req, res) => {
   try {
     console.log("Looking for listings for owner:", req.user)
 
-    const listings = await Listing.find({owner: req.user.id});
+    const listings = await Listing.find({owner: req.user.id}).sort({ createdAt: -1 });
     if (!listings || listings.length === 0) { 
       return res.status(404).json({ message: 'No listings found for this owner' });
     }

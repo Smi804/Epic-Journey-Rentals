@@ -51,11 +51,11 @@ const Listings = () => {
     const fetchListings = async () => {
       setLoading(true)
       const token = localStorage.getItem("token") || null
-      if (!token) {
+      /* if (!token) {
         toast.error("You must be logged in to view listings")
         navigate("/auth")
         return
-      }
+      } */
       try {
         const res = await fetch("http://localhost:5000/api/listings", {
           headers: {

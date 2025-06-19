@@ -95,12 +95,10 @@ const Auth = () => {
     setError("")
 
     try {
-      // Simulate API call
-    
     const res = await fetch("http://localhost:5000/api/auth/login", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
+       method: "POST",
+      headers: {
+      "Content-Type": "application/json",
   },
   body: JSON.stringify(loginData),
 })
@@ -112,21 +110,12 @@ if (!res.ok) throw new Error(data.message || "Login failed")
 // Save token (for later use)
 localStorage.setItem("token", data.token)
 localStorage.setItem("user", JSON.stringify(data.user))
+setLoginData({ email: "", password: "" })
 
 toast.success("(Login successful! Redirecting...")
 setTimeout(() => {
-  navigate("/dashboard") // Redirect to dashboard
+  navigate("/dashboard") 
 }, 1000)
-      /*  await new Promise((resolve) => setTimeout(resolve, 1500))
-
-      // Here you would typically make an API call to your backend
-      console.log("Login data:", loginData)
-
-      // Simulate successful login
-      setSuccess("Login successful! Redirecting...")
-      setTimeout(() => {
-        navigate("/listings") // Redirect to listings page
-      }, 1000) */
     } catch (err) {
       toast.error("Invalid email or password")
     } finally {
@@ -164,8 +153,20 @@ setTimeout(() => {
 
         const data = await res.json()
 
+
         if (!res.ok) throw new Error(data.message || "Registration failed")
 
+
+        setRegisterData({
+            Name: "",
+            email: "",
+            phone: "",
+            location: "",
+            password: "",
+            confirmPassword: "",
+            userType: "renter",
+            agreeTerms: false,
+             })
         toast.success(`${registerData.fullName} Registered successfully`)
         setTimeout(() => {
           navigate("/auth") // Redirect to login page
@@ -175,17 +176,7 @@ setTimeout(() => {
 
 
       
-      // Simulate API call
-     /*  await new Promise((resolve) => setTimeout(resolve, 2000))
-
-      // Here you would typically make an API call to your backend
-      console.log("Register data:", registerData)
-
-      // Simulate successful registration
-      setSuccess("Registration successful! Welcome to Epic Journey Rentals!")
-      setTimeout(() => {
-        navigate("/listings") // Redirect to listings page
-      }, 1500) */
+     
     } catch (err) {
       toast.error(`Registration failed:${err.message}`)
     } finally {
