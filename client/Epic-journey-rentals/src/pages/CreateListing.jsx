@@ -90,7 +90,7 @@ const CreateListing = () => {
         [name]: value,
       }))
     }
-    // Clear error when user starts typing
+
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }))
     }
@@ -182,64 +182,55 @@ const CreateListing = () => {
     setCurrentStep((prev) => Math.max(prev - 1, 1))
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (!validateStep(currentStep)) return
+  if (!validateStep(currentStep)) return;
 
-    setLoading(true)
-    const token = localStorage.getItem("token")
+  setLoading(true);
+  const token = localStorage.getItem("token");
 
-    if (!token) {
-      toast.error("You must be logged in")
-      navigate("/auth")
-      return
-    }
-
-    try {
-      // Create FormData for file upload
-      const submitData = new FormData()
-      submitData.append("title", formData.title)
-      submitData.append("description", formData.description)
-      submitData.append("category", formData.category)
-      submitData.append("price", formData.price)
-      submitData.append("location", formData.location)
-      submitData.append("availability[startDate]", formData.availability.startDate)
-      submitData.append("availability[endDate]", formData.availability.endDate)
-
-      // Append image files
-      imageFiles.forEach((file) => {
-        submitData.append("images", file)
-      })
-          const res = await fetch("http://localhost:5000/api/listings", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify(formData),
-          })
-
-      /* const res = await fetch("http://localhost:5000/api/listings", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: submitData,
-      })
-
-      const data = await res.json() */
-
-      if (!res.ok) throw new Error(data.message || "Failed to create listing")
-
-      toast.success("Listing created successfully!")
-      navigate("/owner/listings")
-    } catch (err) {
-      toast.error(err.message)
-    } finally {
-      setLoading(false)
-    }
+  if (!token) {
+    toast.error("You must be logged in");
+    navigate("/auth");
+    return;
   }
+
+  try {
+    const form = new FormData();
+    form.append("title", formData.title);
+    form.append("description", formData.description);
+    form.append("category", formData.category);
+    form.append("price", formData.price);
+    form.append("location", formData.location);
+    form.append("availability[startDate]", formData.availability.startDate);
+    form.append("availability[endDate]", formData.availability.endDate);
+
+    imageFiles.forEach((file) => {
+      form.append("images", file);
+    });
+
+    const res = await fetch("http://localhost:5000/api/listings", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`, 
+      },
+      body: form,
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.message || "Failed to create listing");
+
+    toast.success("Listing created successfully!");
+    navigate("/owner/listings");
+  } catch (err) {
+    toast.error(err.message);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const selectedCategory = categories.find((cat) => cat.value === formData.category)
 
@@ -274,9 +265,8 @@ const CreateListing = () => {
                 <div key={step.number} className="flex items-center">
                   <div className="flex items-center">
                     <div
-                      className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${
-                        currentStep >= step.number ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-600"
-                      }`}
+                      className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${currentStep >= step.number ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-600"
+                        }`}
                     >
                       {currentStep > step.number ? <CheckCircle className="w-5 h-5" /> : step.number}
                     </div>
@@ -313,9 +303,8 @@ const CreateListing = () => {
                       name="title"
                       value={formData.title}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
-                        errors.title ? "border-red-300" : "border-gray-300"
-                      }`}
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${errors.title ? "border-red-300" : "border-gray-300"
+                        }`}
                       placeholder="e.g., Professional DSLR Camera with Lens Kit"
                       maxLength={100}
                     />
@@ -335,11 +324,10 @@ const CreateListing = () => {
                       {categories.map((category) => (
                         <div
                           key={category.value}
-                          className={`relative border-2 rounded-xl p-4 cursor-pointer transition-all ${
-                            formData.category === category.value
+                          className={`relative border-2 rounded-xl p-4 cursor-pointer transition-all ${formData.category === category.value
                               ? "border-blue-500 bg-blue-50"
                               : "border-gray-200 hover:border-gray-300"
-                          }`}
+                            }`}
                           onClick={() => handleInputChange({ target: { name: "category", value: category.value } })}
                         >
                           <div className="flex items-center gap-3 mb-3">
@@ -382,9 +370,8 @@ const CreateListing = () => {
                       value={formData.description}
                       onChange={handleInputChange}
                       rows={6}
-                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none ${
-                        errors.description ? "border-red-300" : "border-gray-300"
-                      }`}
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none ${errors.description ? "border-red-300" : "border-gray-300"
+                        }`}
                       placeholder="Describe your item in detail. Include condition, features, what's included, and any special instructions..."
                       maxLength={1000}
                     />
@@ -417,9 +404,8 @@ const CreateListing = () => {
                           name="price"
                           value={formData.price}
                           onChange={handleInputChange}
-                          className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
-                            errors.price ? "border-red-300" : "border-gray-300"
-                          }`}
+                          className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${errors.price ? "border-red-300" : "border-gray-300"
+                            }`}
                           placeholder="0"
                           min="1"
                         />
@@ -448,9 +434,8 @@ const CreateListing = () => {
                           name="location"
                           value={formData.location}
                           onChange={handleInputChange}
-                          className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
-                            errors.location ? "border-red-300" : "border-gray-300"
-                          }`}
+                          className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${errors.location ? "border-red-300" : "border-gray-300"
+                            }`}
                           placeholder="e.g., Lahore, Punjab"
                         />
                       </div>
@@ -476,9 +461,8 @@ const CreateListing = () => {
                             name="availability.startDate"
                             value={formData.availability.startDate}
                             onChange={handleInputChange}
-                            className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
-                              errors.startDate ? "border-red-300" : "border-gray-300"
-                            }`}
+                            className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${errors.startDate ? "border-red-300" : "border-gray-300"
+                              }`}
                             min={new Date().toISOString().split("T")[0]}
                           />
                         </div>
@@ -498,9 +482,8 @@ const CreateListing = () => {
                             name="availability.endDate"
                             value={formData.availability.endDate}
                             onChange={handleInputChange}
-                            className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
-                              errors.endDate ? "border-red-300" : "border-gray-300"
-                            }`}
+                            className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${errors.endDate ? "border-red-300" : "border-gray-300"
+                              }`}
                             min={formData.availability.startDate || new Date().toISOString().split("T")[0]}
                           />
                         </div>
@@ -516,56 +499,83 @@ const CreateListing = () => {
                 </div>
               )}
 
-             {/*  {/* Step 3: Photos */}
-           {currentStep === 3 && (
-  <div className="space-y-6">
-    <div>
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">Add Image URLs</h2>
-      <p className="text-gray-600">Enter direct image URLs (e.g., from Cloudinary, Imgur, etc.)</p>
-    </div>
+              {/*  {/* Step 3: Photos */}
+              {currentStep === 3 && (
+                <div className="space-y-6">
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">Upload Photos</h2>
+                    <p className="text-gray-600">Add high-quality photos to showcase your item</p>
+                  </div>
 
-    {formData.images.map((url, index) => (
-      <div key={index} className="flex items-center gap-2">
-        <input
-          type="url"
-          value={url}
-          onChange={(e) => {
-            const newUrls = [...formData.images]
-            newUrls[index] = e.target.value
-            setFormData({ ...formData, images: newUrls })
-          }}
-          placeholder="https://example.com/image.jpg"
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-        />
-        <button
-          type="button"
-          onClick={() => {
-            const newUrls = formData.images.filter((_, i) => i !== index)
-            setFormData({ ...formData, images: newUrls })
-          }}
-          className="text-red-500 hover:text-red-700"
-        >
-          <X className="w-4 h-4" />
-        </button>
-      </div>
-    ))}
+                  {/* Image Upload */}
+                  <div>
+                    <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-blue-400 transition-colors">
+                      <input
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="hidden"
+                        id="image-upload"
+                      />
+                      <label htmlFor="image-upload" className="cursor-pointer">
+                        <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">Upload Images</h3>
+                        <p className="text-gray-600 mb-4">Drag and drop your images here, or click to browse</p>
+                        <div className="bg-blue-600 text-white px-6 py-2 rounded-lg inline-flex items-center gap-2 hover:bg-blue-700 transition-colors">
+                          <Plus className="w-4 h-4" />
+                          Choose Files
+                        </div>
+                      </label>
+                    </div>
 
-    <button
-      type="button"
-      onClick={() => setFormData({ ...formData, images: [...formData.images, ""] })}
-      className="text-blue-600 hover:text-blue-800 mt-2 flex items-center gap-1"
-    >
-      <Plus className="w-4 h-4" /> Add Another URL
-    </button>
+                    <div className="mt-4 text-sm text-gray-500">
+                      <p>• Maximum 10 images</p>
+                      <p>• Maximum 5MB per image</p>
+                      <p>• Supported formats: JPG, PNG, WebP</p>
+                    </div>
 
-    {errors.images && (
-      <p className="text-sm text-red-600 mt-2 flex items-center gap-1">
-        <AlertCircle className="w-4 h-4" />
-        {errors.images}
-      </p>
-    )}
-  </div>
-)}
+                    {errors.images && (
+                      <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                        <AlertCircle className="w-4 h-4" />
+                        {errors.images}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Image Preview */}
+                  {formData.images.length > 0 && (
+                    <div>
+                      <h3 className="text-lg font-medium text-gray-900 mb-4">
+                        Uploaded Images ({formData.images.length}/10)
+                      </h3>
+                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        {formData.images.map((image, index) => (
+                          <div key={index} className="relative group">
+                            <img
+                              src={image || "/placeholder.svg"}
+                              alt={`Upload ${index + 1}`}
+                              className="w-full h-32 object-cover rounded-lg border border-gray-200"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => removeImage(index)}
+                              className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                            {index === 0 && (
+                              <div className="absolute bottom-2 left-2 bg-blue-600 text-white px-2 py-1 rounded text-xs">
+                                Main Photo
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
 
 
               {/* Step 4: Review */}
@@ -659,9 +669,8 @@ const CreateListing = () => {
                 <button
                   type="button"
                   onClick={prevStep}
-                  className={`px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors ${
-                    currentStep === 1 ? "invisible" : ""
-                  }`}
+                  className={`px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors ${currentStep === 1 ? "invisible" : ""
+                    }`}
                 >
                   Previous
                 </button>

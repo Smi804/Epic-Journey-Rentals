@@ -113,7 +113,7 @@ const Navbar = () => {
           <Link to="/" className="flex items-center space-x-2 group">
            <img src={logo} className="h-10 w-10" alt="logo" />
             <div className="hidden sm:block">
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+               <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
                 Epic Journey
               </span>
               <div className="text-xs text-gray-500 -mt-1">Rentals</div>

@@ -227,7 +227,7 @@ const Listings = () => {
             <span className="text-gray-500 text-sm">/day</span>
           </div>
           <Link
-            to={`/items/${listing._id}`}
+            to={`/listing/${listing._id}`}
             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
           >
             View Details

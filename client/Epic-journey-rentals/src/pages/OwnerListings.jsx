@@ -174,7 +174,7 @@ const OwnerListings = () => {
               <div className="flex flex-col sm:flex-row gap-3">
                 
 
-                {/* Add New Listing Button */}
+                
                 <Link
                   to="/owner/create"
                   className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 font-semibold flex items-center gap-2 whitespace-nowrap"

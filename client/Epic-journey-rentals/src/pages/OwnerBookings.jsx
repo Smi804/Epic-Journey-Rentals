@@ -34,6 +34,8 @@ const OwnerBookings = () => {
   const [selectedBooking, setSelectedBooking] = useState(null)
   const [actionType, setActionType] = useState("")
   const [processing, setProcessing] = useState(false)
+  const [processingIds, setProcessingIds] = useState([])
+
 
   const statusOptions = [
     { value: "all", label: "All Bookings", count: 0 },
@@ -94,7 +96,7 @@ const OwnerBookings = () => {
     setFilteredBookings(filtered)
   }, [bookings, searchTerm, statusFilter])
 
-  const handleStatusChange = async (bookingId, newStatus) => {
+  /* const handleStatusChange = async (bookingId, newStatus) => {
     setProcessing(true)
     const token = localStorage.getItem("token")
 
@@ -121,9 +123,58 @@ const OwnerBookings = () => {
     } finally {
       setProcessing(false)
     }
-  }
+  } */
 
-  const openConfirmModal = (booking, action) => {
+/* const handleStatusChange = async (bookingId, newStatus) => {
+  setProcessing(true);
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`http://localhost:5000/api/bookings/${bookingId}/status`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ status: newStatus }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message);
+    toast.success("Status updated");
+    fetchBookings()
+  } catch (err) {
+    toast.error(err.message || "Failed to update status");
+  }
+};
+ */
+
+const handleStatusChange = async (bookingId, newStatus) => {
+  setProcessingIds((prev) => [...prev, bookingId]) // 🔄 Start processing this ID
+
+  try {
+    const token = localStorage.getItem("token")
+    const res = await fetch(`http://localhost:5000/api/bookings/${bookingId}/status`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ status: newStatus }),
+    })
+    const data = await res.json()
+    if (!res.ok) throw new Error(data.message)
+
+    toast.success("Status updated")
+    fetchBookings()
+    setShowConfirmModal(false)
+    setSelectedBooking(null)
+  } catch (err) {
+    toast.error(err.message || "Failed to update status")
+  } finally {
+    setProcessingIds((prev) => prev.filter((id) => id !== bookingId)) // ✅ Remove from processing
+  }
+}
+ 
+const openConfirmModal = (booking, action) => {
     setSelectedBooking(booking)
     setActionType(action)
     setShowConfirmModal(true)
@@ -537,7 +588,7 @@ const OwnerBookings = () => {
                 </button>
                 <button
                   onClick={() => handleStatusChange(selectedBooking._id, actionType)}
-                  disabled={processing}
+                  disabled={processingIds.includes(selectedBooking._id)}
                   className={`flex-1 px-4 py-2 rounded-lg transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed ${
                     actionType === "confirmed"
                       ? "bg-green-600 text-white hover:bg-green-700"

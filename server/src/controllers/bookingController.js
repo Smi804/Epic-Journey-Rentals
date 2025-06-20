@@ -6,9 +6,9 @@ export const createBooking = async (req, res) => {
   const { listingId, startDate, endDate, totalPrice } = req.body;
 
   try {
-    const renterId = req.user.id; // ✅ Correct this line
+    const renterId = req.user.id;
 
-    // Check if listing exists
+    
     const listing = await Listing.findById(listingId);
     if (!listing) {
       return res.status(404).json({ message: "Listing not found" });
@@ -27,7 +27,7 @@ export const createBooking = async (req, res) => {
       });
     }
 
-    // Create new booking
+    
     const newBooking = await Booking.create({
       listing: listingId,
       renter: renterId,
@@ -72,13 +72,13 @@ export const getBookingsByRenter = async (req, res) => {
  export const getBookingById = async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id)
-      .populate("renter", "_id name email") // this will ensure renter is an object
+      .populate("renter", "_id name email") 
       .populate({
         path: "listing",
         select: "_id title owner",
         populate: {
           path: "owner",
-          select: "_id name email", // nested populate to access listing.owner
+          select: "_id name email",
         },
       }) 
 
@@ -92,7 +92,6 @@ export const getBookingsByRenter = async (req, res) => {
     const renterId = booking.renter?._id?.toString()
     const ownerId = booking.listing?.owner?._id?.toString()
 
-    // Allow if the user is the renter
     if (userRole === "renter" && renterId === userId) {
       return res.json(booking)
     }
@@ -111,46 +110,20 @@ export const getBookingsByRenter = async (req, res) => {
   }
 }
 
-/* export const getBookingByOwner = async (req, res) => {
-  try {
-    const ownerId = req.user.id; 
-    const bookings = await Booking.find({ "listing.owner": ownerId })
-  .populate({
-    path: "listing",
-    match: { owner: ownerId },
-    select: "title price owner",
-  })
-  .populate("renter", "name email");
-  
-
-    res.status(200).json({
-      message: "Bookings fetched successfully",
-      bookings,
-    });
-  } catch (error) {
-    console.error("Error fetching bookings:", error);
-    res.status(500).json({
-      message: "Server error",
-      error: error.message,
-    });
-  }
-}                                
- */
-
 export const getBookingByOwner = async (req, res) => {
   try {
-    const ownerId = req.user.id; // from verifyToken middleware
+    const ownerId = req.user.id;
 
-    // Fetch all bookings and populate listing and renter
+    
     const allBookings = await Booking.find()
       .populate({
         path: "listing",
-        match: { owner: ownerId }, // Only include listings owned by this owner
-        select: "title price owner", // Optional: include only needed fields
+        match: { owner: ownerId }, 
+        select: "title price owner", 
       })
-      .populate("renter", "fullname email"); // Adjust fields as needed
+      .populate("renter", "fullname email"); 
 
-    // Filter out bookings where the listing was not matched (i.e., not owned by this owner)
+    
     const ownerBookings = allBookings.filter((booking) => booking.listing !== null);
 
     res.status(200).json({
@@ -165,5 +138,53 @@ export const getBookingByOwner = async (req, res) => {
     });
   }
 };
+
+
+
+/* export const updateBookingStatus = async (req, res) => {
+  const { bookingId } = req.params;
+  const { status } = req.body;
+
+  // Validate incoming status
+  const validStatuses = ["pending", "confirmed", "cancelled"];
+  if (!validStatuses.includes(status)) {
+    return res.status(400).json({ message: "Invalid booking status" });
+  }
+
+  try {
+    const booking = await Booking.findById(bookingId).populate("listing");
+    if (!booking) return res.status(404).json({ message: "Booking not found" });
+
+    // Ensure owner owns this listing
+    if (booking.listing.owner.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Unauthorized to update this booking" });
+    }
+
+    booking.status = status;
+    await booking.save();
+
+    res.status(200).json({ message: "Booking status updated", booking });
+  } catch (err) {
+    console.error("Error updating status:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+}; */
+export const updateBookingStatus = async (req, res) => {
+
+  try {
+     const bookingId = req.params.id;
+    const booking = await Booking.findById(bookingId)
+     console.log("Received PATCH request for Booking ID:", bookingId);
+    if (!booking) return res.status(404).json({ message: "Booking not found" })
+
+    booking.status = req.body.status
+    await booking.save()
+
+    res.status(200).json({ message: "Booking status updated" })
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message })
+  }
+}
+
 
 

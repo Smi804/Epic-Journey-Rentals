@@ -1,6 +1,7 @@
 import express from 'express'
 import verifyToken from '../middleware/auth.js'
 import { requireRole } from '../middleware/role.js'
+import upload from '../middleware/multer.js'
 import {
   createListing,
   getAllListings,
@@ -18,7 +19,7 @@ import {
 const router = express.Router()
 
 
-router.post('/', verifyToken, requireRole('owner'), createListing)
+router.post('/', verifyToken, requireRole('owner'),upload.array("images", 5), createListing)
 
 router.get('/', getAllListings)
 router.get('/category/:category', getListingsByCategory)

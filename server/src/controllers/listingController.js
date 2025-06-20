@@ -2,11 +2,17 @@ import Listing from '../models/Listing.js';
 
 export const createListing = async (req, res) => {
   try {
-    const newListing = await Listing.create({ ...req.body, owner: req.user.id });
+    const imageUrls=req.files.map((file)=>file.path);
+    const newListing = await Listing.create({
+      ...req.body,
+      owner: req.user.id,
+      images:imageUrls,
+      });
     if (!newListing) {
       return res.status(400).json({ message: 'Failed to create listing' });
     }
-    res.status(201).json({ message: 'Listing created successfully', listing: newListing });
+    res.status(201).json({ message: 'Listing created successfully',
+    listing: newListing });
   } catch (err) {
     res.status(500).json({ message: 'my Server error', error: err.message });
   }
