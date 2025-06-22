@@ -22,6 +22,7 @@ import {
   Car,
   Camera,
   Backpack,
+  MessageCircle,
 } from "lucide-react"
 
 const Navbar = () => {
@@ -81,12 +82,14 @@ const Navbar = () => {
     { name: "Add Listing", path: "/owner/create", icon: <Plus className="w-4 h-4" /> },
     { name: "Bookings", path: "/owner/bookings", icon: <Calendar className="w-4 h-4" /> },
     { name: "Analytics", path: "/owner/analytics", icon: <Star className="w-4 h-4" /> },
+    { name: "Inbox", path: "/inbox", icon: <MessageCircle className="w-4 h-4" /> },
   ]
 
   const renterLinks = [
     { name: "My Bookings", path: "/renter/bookings", icon: <Calendar className="w-4 h-4" /> },
     { name: "Favorites", path: "/renter/favorites", icon: <Heart className="w-4 h-4" /> },
     { name: "Explore", path: "/listings", icon: <Search className="w-4 h-4" /> },
+    { name: "Inbox", path: "/inbox", icon: <MessageCircle className="w-4 h-4" /> },
   ]
 
   const categories = [

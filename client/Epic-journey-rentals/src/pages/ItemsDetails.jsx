@@ -386,8 +386,10 @@ const ItemsDetails = () => {
                       ready for your next journey.
                     </p>
                     <div className="flex gap-3 mt-4">
-                      <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                        <MessageCircle className="w-4 h-4" />
+                      <button
+                          onClick={() => navigate(`/chat/${owner._id}`)}
+                          className="flex items-center gap-2 px-4 py-2 border rounded">
+                          <MessageCircle className="w-4 h-4" />
                         Message
                       </button>
                       <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">

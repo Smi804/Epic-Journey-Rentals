@@ -11,6 +11,8 @@ import OwnerListings from './pages/OwnerListings';
 import CreateListing from './pages/CreateListing';
 import OwnerBookings from './pages/OwnerBookings';
 import EditListing from './pages/EditListing';
+import ChatPage from './pages/ChatPage';
+import Inbox from './pages/Inbox';
 
 
 function App() {
@@ -27,6 +29,9 @@ function App() {
       <Route path='/owner/create' element={<CreateListing/>}/>
       <Route path='/owner/bookings' element={<OwnerBookings/>}/>
       <Route path='/owner/edit/:id' element={<EditListing/>}/>
+      <Route path="/chat/:ownerId" element={<ChatPage />} />
+      <Route path="/inbox" element={<Inbox />} />
+
       
     </Routes>
 
