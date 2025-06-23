@@ -8,6 +8,7 @@ import authRoutes from './routes/authRoutes.js';
 import listingRoutes from './routes/listingRoutes.js';
 import bookingRoutes from './routes/bookingRoutes.js';
 import messageRoutes from './routes/messageRoutes.js'
+import userRoutes from './routes/userRoutes.js'
 
 
 
@@ -31,6 +32,7 @@ app.use("/api/messages", messageRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/listings', listingRoutes);
 app.use('/api/bookings', bookingRoutes);
+app.use('/api/users',userRoutes);
 
 
 

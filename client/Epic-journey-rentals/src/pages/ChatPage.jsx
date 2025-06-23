@@ -1,5 +1,8 @@
 import { useParams, useNavigate } from "react-router-dom"
-import { ArrowLeft, MessageCircle, User, Shield, AlertCircle } from "lucide-react"
+import { ArrowLeft,
+         MessageCircle, 
+         User, Shield, 
+         AlertCircle } from "lucide-react"
 import ChatBox from "../Comps/ChatBox"
 import Navbar from "../Comps/Navbar"
 import Footer from "../Comps/Footer"
@@ -155,31 +158,7 @@ const ChatPage = () => {
             <ChatBox currentUserId={currentUserId} otherUserId={ownerId} />
           </div>
 
-          {/* Chat Tips */}
-          <div className="mt-6 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
-              <MessageCircle className="w-5 h-5 mr-2 text-blue-600" />
-              Chat Tips
-            </h3>
-            <div className="grid md:grid-cols-2 gap-4 text-sm text-gray-600">
-              <div className="flex items-start space-x-2">
-                <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
-                <p>Be clear about pickup/return times and locations</p>
-              </div>
-              <div className="flex items-start space-x-2">
-                <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
-                <p>Ask questions about the item's condition and features</p>
-              </div>
-              <div className="flex items-start space-x-2">
-                <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
-                <p>Confirm booking details before finalizing</p>
-              </div>
-              <div className="flex items-start space-x-2">
-                <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
-                <p>Report any issues to our support team</p>
-              </div>
-            </div>
-          </div>
+         
         </div>
       </div>
       <Footer />

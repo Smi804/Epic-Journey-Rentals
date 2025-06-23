@@ -94,12 +94,12 @@ const ChatBox = ({ currentUserId, otherUserId }) => {
       socket.emit("typing", { userId: currentUserId, receiverId: otherUserId })
     }
 
-    // Clear existing timeout
+    
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current)
     }
 
-    // Set new timeout
+   
     typingTimeoutRef.current = setTimeout(() => {
       setIsTyping(false)
       socket.emit("stopTyping", { userId: currentUserId, receiverId: otherUserId })
@@ -119,7 +119,7 @@ const ChatBox = ({ currentUserId, otherUserId }) => {
     }
 
     try {
-      // Emit to socket first for real-time update
+      
       socket.emit("sendMessage", newMessage)
 
       // Add to local chat immediately for better UX
@@ -310,9 +310,9 @@ const ChatBox = ({ currentUserId, otherUserId }) => {
       <div className="border-t border-gray-200 bg-white p-4">
         <div className="flex items-end space-x-3">
           {/* Attachment Button */}
-          <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+          {/* <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
             <Paperclip className="w-5 h-5" />
-          </button>
+          </button> */}
 
           {/* Message Input */}
           <div className="flex-1 relative">
@@ -325,11 +325,6 @@ const ChatBox = ({ currentUserId, otherUserId }) => {
               className="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none max-h-32"
               style={{ minHeight: "44px" }}
             />
-
-            {/* Emoji Button */}
-            <button className="absolute right-3 top-1/2 transform -translate-y-1/2 p-1 text-gray-500 hover:text-gray-700 transition-colors">
-              <Smile className="w-5 h-5" />
-            </button>
           </div>
 
           {/* Send Button */}

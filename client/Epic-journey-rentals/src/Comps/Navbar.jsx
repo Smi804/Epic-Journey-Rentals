@@ -54,13 +54,13 @@ const Navbar = () => {
     return () => document.removeEventListener("click", handleClickOutside)
   }, [])
 
-  const handleLogout = () => {
-    localStorage.removeItem("token")
-    localStorage.removeItem("user")
-    setUser(null)
-    setShowUserMenu(false)
-    navigate("/auth")
-  }
+ const handleLogout = () => {
+  localStorage.removeItem("user");
+  localStorage.removeItem("token");
+  
+  window.location.href = "/auth";
+};
+
 
   const handleSearch = (e) => {
     e.preventDefault()
