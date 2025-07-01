@@ -86,7 +86,7 @@ const AboutUs = () => {
     {
       icon: <Heart className="w-6 h-6" />,
       title: "Community First",
-      description: "Building genuine connections between adventurers and creating lasting relationships.",
+      description: "Building the genuine connections between adventurers and creating lasting relationships.",
     },
     {
       icon: <Lightbulb className="w-6 h-6" />,
