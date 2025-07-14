@@ -241,7 +241,7 @@ const OwnerListings = () => {
                           <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 z-10">
                             <div className="p-1">
                               <Link
-                                to={`/items/${listing._id}`}
+                                to={`/listing/${listing._id}`}
                                 className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
                                 onClick={() => setShowDropdown(null)}
                               >
@@ -332,7 +332,7 @@ const OwnerListings = () => {
                     {/* Quick Actions */}
                     <div className="flex gap-2">
                       <Link
-                        to={`/items/${listing._id}`}
+                        to={`/listing/${listing._id}`}
                         className="flex-1 flex items-center justify-center gap-2 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm"
                       >
                         <Eye className="w-4 h-4" />

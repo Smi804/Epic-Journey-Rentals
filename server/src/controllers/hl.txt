@@ -1,0 +1,10 @@
+Download the React DevTools for a better development experience: https://react.dev/link/react-devtools
+react-dom_client.js?v=c2cc4fd1:2473 Received `true` for a non-boolean attribute `jsx`.
+
+If you want to write it to the DOM, pass a string instead: jsx="true" or jsx={value.toString()}.
+validateProperty @ react-dom_client.js?v=c2cc4fd1:2473Understand this error
+via.placeholder.com/400:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+res.cloudinary.com/df1svu2cl/image/upload/v1750372580/epic-journey-listings/r3bnebtkcqsjauxvnitp.png:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+via.placeholder.com/400:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+:5000/api/listings:1  Failed to load resource: the server responded with a status of 500 (Internal Server Error)Understand this error
+

@@ -13,6 +13,7 @@ import OwnerBookings from './pages/OwnerBookings';
 import EditListing from './pages/EditListing';
 import ChatPage from './pages/ChatPage';
 import Inbox from './pages/Inbox';
+import UploadTestListing from './pages/UploadTestListing';
 
 
 function App() {
@@ -31,6 +32,8 @@ function App() {
       <Route path='/owner/edit/:id' element={<EditListing/>}/>
       <Route path="/chat/:ownerId" element={<ChatPage />} />
       <Route path="/inbox" element={<Inbox />} />
+      <Route path="/test-upload" element={<UploadTestListing />} />
+
 
       
     </Routes>

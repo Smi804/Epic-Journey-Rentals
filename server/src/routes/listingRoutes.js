@@ -1,7 +1,7 @@
 import express from 'express'
 import verifyToken from '../middleware/auth.js'
 import { requireRole } from '../middleware/role.js'
-import upload from '../middleware/multer.js'
+import upload from '../utils/multer.js'
 import {
   createListing,
   getAllListings,
@@ -19,13 +19,13 @@ import {
 const router = express.Router()
 
 
-router.post('/', verifyToken, requireRole('owner'),upload.array("images", 5), createListing)
+ router.post("/", verifyToken, upload.array("images", 10), createListing);
 
 router.get('/', getAllListings)
 router.get('/category/:category', getListingsByCategory)
 router.get('/:id', getListingById)
 
-router.put('/:id', verifyToken, requireRole('owner'), updateListingById)
+router.put("/:id", verifyToken, requireRole("owner"), upload.array("images", 10), updateListingById);
 router.delete('/:id', verifyToken, requireRole('owner'), deleteListingById)
 router.get('/owner/listings', verifyToken,requireRole('owner'), getListingsByOwner)
 

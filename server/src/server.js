@@ -9,7 +9,7 @@ import listingRoutes from './routes/listingRoutes.js';
 import bookingRoutes from './routes/bookingRoutes.js';
 import messageRoutes from './routes/messageRoutes.js'
 import userRoutes from './routes/userRoutes.js'
-
+import testlistingRoutes from './routes/testlistingRoutes.js';
 
 
 dotenv.config();
@@ -28,11 +28,14 @@ const io = new Server(server, {
 });
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); 
+
 app.use("/api/messages", messageRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/listings', listingRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/users',userRoutes);
+app.use('/api/testlistings', testlistingRoutes);
 
 
 

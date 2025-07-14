@@ -44,6 +44,8 @@ const Navbar = () => {
     }
   }, [])
 
+  
+
   // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = () => {

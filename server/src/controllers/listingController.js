@@ -1,28 +1,65 @@
 import Listing from '../models/Listing.js';
+import { v2 as cloudinary } from "cloudinary";
+import streamifier from "streamifier";
 
 export const createListing = async (req, res) => {
   try {
-    const imageUrls=req.files.map((file)=>file.path);
-    const newListing = await Listing.create({
-      ...req.body,
-      owner: req.user.id,
-      images:imageUrls,
-      });
-    if (!newListing) {
-      return res.status(400).json({ message: 'Failed to create listing' });
+    const files = req.files;
+    const uploadedImageUrls = [];
+
+    // Upload each image to Cloudinary
+    for (const file of files) {
+      const result = await cloudinary.uploader.upload_stream(
+        { folder: "listings" },
+        (error, result) => {
+          if (error) throw error;
+          uploadedImageUrls.push(result.secure_url);
+          if (uploadedImageUrls.length === files.length) {
+            finalizeListing();
+          }
+        }
+      );
+
+      // Pipe buffer to Cloudinary stream
+      streamifier.createReadStream(file.buffer).pipe(result);
     }
-    res.status(201).json({ message: 'Listing created successfully',
-    listing: newListing });
+
+    function finalizeListing() {
+      const { title, description, category, price, location, availability } = req.body;
+
+      Listing.create({
+        title,
+        description,
+        category,
+        price,
+        location,
+        availability,
+        images: uploadedImageUrls,
+        owner: req.user.id,
+      })
+        .then((listing) =>
+          res.status(201).json({ message: "Listing created", listing })
+        )
+        .catch((err) =>
+          res.status(500).json({ message: "DB error", error: err.message })
+        );
+    }
   } catch (err) {
-    res.status(500).json({ message: 'my Server error', error: err.message });
+    console.error("Listing upload error:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 };
 
 
 
+
 export const getAllListings = async (req, res) => {
   try {
+    const mylistings = await Listing.find();
+    console.log("Count of listings in DB:", mylistings.length); // Should not be 0
+
     const listings = await Listing.find().populate('owner', 'name email');
+    console.log("Fetched listings:", listings);
     res.json(listings);
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
@@ -55,8 +92,70 @@ export const deleteListingById = async (req, res) => {
   }
 }
 
+export const updateListingById = async (req, res) => {
+  try {
+    const listingId = req.params.id;
+    const {
+      title,
+      description,
+      category,
+      price,
+      location,
+      availability,
+      existingImages = [],
+    } = req.body;
+
+    const uploadedImageUrls = [];
+
+    const uploadPromises = req.files.map(
+      (file) =>
+        new Promise((resolve, reject) => {
+          const uploadStream = cloudinary.uploader.upload_stream(
+            { folder: "listings" },
+            (err, result) => {
+              if (err) return reject(err);
+              resolve(result.secure_url);
+            }
+          );
+          streamifier.createReadStream(file.buffer).pipe(uploadStream);
+        })
+    );
+
+    const cloudinaryUrls = await Promise.all(uploadPromises);
+    uploadedImageUrls.push(...cloudinaryUrls);
+
+    const allImages = [...existingImages, ...uploadedImageUrls];
+
+    const updatedListing = await Listing.findByIdAndUpdate(
+      listingId,
+      {
+        title,
+        description,
+        category,
+        price,
+        location,
+        availability: {
+          startDate: availability?.startDate,
+          endDate: availability?.endDate,
+        },
+        images: allImages,
+      },
+      { new: true }
+    );
+
+    if (!updatedListing) {
+      return res.status(404).json({ message: "Listing not found" });
+    }
+
+    res.json({ message: "Listing updated successfully", listing: updatedListing });
+  } catch (err) {
+    console.error("Update error:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
 
 
+/* 
 export const updateListingById = async (req, res) => {
   try {
     const updatedListing = await Listing.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -67,7 +166,7 @@ export const updateListingById = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
-}
+} */
 
 export const getListingsByOwner = async (req, res) => {
   try {

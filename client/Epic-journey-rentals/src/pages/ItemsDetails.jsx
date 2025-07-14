@@ -28,6 +28,7 @@ const ItemsDetails = () => {
   const { id } = useParams()
   const navigate = useNavigate()
   const [listing, setListing] = useState(null)
+  const [ownerInfo, setOwnerInfo] = useState(null)
   const [loading, setLoading] = useState(true)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [isFavorite, setIsFavorite] = useState(false)
@@ -37,37 +38,54 @@ const ItemsDetails = () => {
     endDate: "",
   })
 
-  useEffect(() => {
-    const fetchListing = async () => {
-      try {
-        const token = localStorage.getItem("token")
-        if (!token) {
-          toast.error("Please login to view item details")
-          navigate("/auth")
-          return
-        }
+useEffect(() => {
+  const fetchListing = async () => {
+    try {
+      const token = localStorage.getItem("token")
+      if (!token) {
+        toast.error("Please login to view item details")
+        navigate("/auth")
+        return
+      }
 
-        const res = await fetch(`http://localhost:5000/api/listings/${id}`, {
+      const res = await fetch(`http://localhost:5000/api/listings/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) throw new Error(data.message || "Error fetching listing")
+
+      setListing(data)
+
+      
+      if (data.owner?._id) {
+        const ownerRes = await fetch(`http://localhost:5000/api/users/${data.owner._id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         })
 
-        const data = await res.json()
-
-        if (!res.ok) throw new Error(data.message || "Error fetching listing")
-
-        setListing(data)
-      } catch (err) {
-        toast.error(err.message || "Listing not found")
-        navigate("/dashboard")
-      } finally {
-        setLoading(false)
+        const ownerData = await ownerRes.json()
+        if (ownerRes.ok) {
+          setOwnerInfo(ownerData)
+        } else {
+          console.warn("Failed to fetch owner info")
+        }
       }
+    } catch (err) {
+      toast.error(err.message || "Listing not found")
+      navigate("/dashboard")
+    } finally {
+      setLoading(false)
     }
+  }
 
-    fetchListing()
-  }, [id, navigate])
+  fetchListing()
+}, [id, navigate])
+
 
   const handlePreviousImage = () => {
     if (listing?.images?.length > 1) {
@@ -363,43 +381,36 @@ const ItemsDetails = () => {
               </div>
 
               {/* Owner Information */}
-              <div className="bg-white rounded-xl shadow-sm p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Meet Your Host</h3>
-                <div className="flex items-start gap-4">
-                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
-                    <User2 className="w-8 h-8 text-blue-600" />
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="text-xl font-semibold text-gray-900">{owner?.fullName || owner?.name}</h4>
-                    <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
-                      <div className="flex items-center gap-1">
-                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        <span>4.8 (24 reviews)</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <CheckCircle className="w-4 h-4 text-green-500" />
-                        <span>Verified Host</span>
-                      </div>
-                    </div>
-                    <p className="text-gray-600 mt-3">
-                      Experienced host with a passion for adventure gear. I ensure all my items are well-maintained and
-                      ready for your next journey.
-                    </p>
-                    <div className="flex gap-3 mt-4">
-                      <button
-                          onClick={() => navigate(`/chat/${owner._id}`)}
-                          className="flex items-center gap-2 px-4 py-2 border rounded">
-                          <MessageCircle className="w-4 h-4" />
-                        Message
-                      </button>
-                      <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                        <Phone className="w-4 h-4" />
-                        Call
-                      </button>
-                    </div>
-                  </div>
+             <div className="bg-white rounded-xl shadow-sm p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Meet Your Host</h3>
+              <div className="flex items-start gap-4">
+             <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+             <User2 className="w-8 h-8 text-blue-600" />
+             </div>
+              <div className="flex-1">
+               <h4 className="text-xl font-semibold text-gray-900">{owner?.fullName }</h4>
+               <div className="text-gray-600 mt-2 text-sm">
+                <p><strong>Name:</strong> {ownerInfo?.fullname || "Not available"}</p>
+                <p><strong>Email:</strong> {ownerInfo?.email || "Not available"}</p>
+               <p><strong>Phone:</strong> {ownerInfo?.phone || "Not available"}</p>
                 </div>
-              </div>
+                <div className="flex gap-3 mt-4">
+                <button
+          onClick={() => navigate(`/chat/${owner._id}`)}
+          className="flex items-center gap-2 px-4 py-2 border rounded hover:bg-blue-400 transition-colors"
+             >
+                <MessageCircle className="w-4 h-4" />
+                Message
+              </button>
+              <a href={`tel:${ownerInfo?.phone}`}
+                  className="flex items-center gap-2 px-4 py-2 border rounded hover:bg-blue-400 transition-colors">
+                <Phone className="w-4 h-4" />
+                Call
+               </a>
+
+            </div>
+          </div>
+        </div>
             </div>
 
             {/* Right Column - Booking Card */}
@@ -542,8 +553,12 @@ const ItemsDetails = () => {
         )}
       </div>
       <Footer />
-    </>
+  
+  
+  
+  </div>
+  </>
   )
 }
 
-export default ItemsDetails
+export default ItemsDetails;
