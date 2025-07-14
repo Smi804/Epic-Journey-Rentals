@@ -10,6 +10,7 @@ import bookingRoutes from './routes/bookingRoutes.js';
 import messageRoutes from './routes/messageRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 import testlistingRoutes from './routes/testlistingRoutes.js';
+import notificationRoutes from './routes/notificationRoutes.js';
 
 
 dotenv.config();
@@ -36,6 +37,7 @@ app.use('/api/listings', listingRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/users',userRoutes);
 app.use('/api/testlistings', testlistingRoutes);
+app.use('/api/notifications', notificationRoutes);  
 
 
 

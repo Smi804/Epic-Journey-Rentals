@@ -1,4 +1,4 @@
-/* import {createNotification} from "../utils/notification.js"; */
+import {createNotification} from "../utils/createNotification.js"; 
 import Booking from "../models/Booking.js";
 import Listing from "../models/Listing.js";
 
@@ -14,7 +14,7 @@ export const createBooking = async (req, res) => {
       return res.status(404).json({ message: "Listing not found" });
     }
 
-    // Check for conflicting booking
+    
     const conflict = await Booking.findOne({
       listing: listingId,
       startDate: { $lte: new Date(endDate) },
@@ -35,20 +35,20 @@ export const createBooking = async (req, res) => {
       endDate,
       totalPrice,
     });
-    
-
-    res.status(201).json({
-      message: "Booking created successfully",
-      booking: newBooking,
-    });
-   
-      await createNotification({
+    await createNotification({
         userId: listing.owner, 
         type: "booking",
         message: `New booking request for "${listing.title}"`,
         link: "/owner/bookings"
       });
 
+
+    res.status(201).json({
+      message: "Booking created successfully",
+      booking: newBooking,
+    });
+   
+      
   } catch (error) {
     console.error("Booking creation error:", error);
     res.status(500).json({
@@ -189,20 +189,20 @@ export const updateBookingStatus = async (req, res) => {
     booking.status = req.body.status
     await booking.save()
       let message;
-        if (status === "confirmed") {
+        if (booking.status === "confirmed") {
           message = `Your booking for "${booking.listing.title}" was confirmed.`;
         } else if (status === "cancelled") {
           message = `Your booking for "${booking.listing.title}" was cancelled.`;
         }
 
-        /* if (message) {
+         if (message) {
           await createNotification({
             userId: booking.renter._id,
             type: "booking",
             message,
             link: "/renter/bookings"
           });
-        } */
+        } 
 
 
     res.status(200).json({ message: "Booking status updated" })

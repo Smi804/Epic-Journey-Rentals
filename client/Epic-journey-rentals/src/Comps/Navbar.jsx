@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom"
-import { useEffect, useState } from "react"
+import { use, useEffect, useState } from "react"
 import logo from "../assets/logo.png"
 import {
   Menu,
@@ -24,6 +24,7 @@ import {
   Backpack,
   MessageCircle,
 } from "lucide-react"
+import toast from "react-hot-toast"
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -32,10 +33,42 @@ const Navbar = () => {
   const [showNotifications, setShowNotifications] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const [showSearch, setShowSearch] = useState(false)
+  const [notifications, setNotifications] = useState([])
+  const [loadingNotifications, setLoadingNotifications] = useState(true)
+
   const navigate = useNavigate()
   const location = useLocation()
 
   const isHomePage = location.pathname === "/"
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      const token = localStorage.getItem("token")
+      if (!token) return;
+
+      try {
+        const res = await fetch("http://localhost:5000/api/notifications", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.message || "Failed to fetch notifications");
+        }
+        setNotifications(data.notifications.reverse() || []);
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+        toast.error("Failed to load notifications. Please reload and check internet.");
+      } finally {
+        setLoadingNotifications(false);
+      }
+
+    };
+    fetchNotifications()
+  }, [])
+
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user")
@@ -44,7 +77,7 @@ const Navbar = () => {
     }
   }, [])
 
-  
+
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -56,12 +89,12 @@ const Navbar = () => {
     return () => document.removeEventListener("click", handleClickOutside)
   }, [])
 
- const handleLogout = () => {
-  localStorage.removeItem("user");
-  localStorage.removeItem("token");
-  
-  window.location.href = "/auth";
-};
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+
+    window.location.href = "/auth";
+  };
 
 
   const handleSearch = (e) => {
@@ -101,11 +134,7 @@ const Navbar = () => {
     { name: "Accommodation", icon: <Home className="w-4 h-4" />, path: "/listings?category=accommodation" },
   ]
 
-  const notifications = [
-    { id: 1, message: "New booking request for your camera", time: "2 min ago", unread: true },
-    { id: 2, message: "Your booking has been confirmed", time: "1 hour ago", unread: true },
-    { id: 3, message: "Payment received for tent rental", time: "3 hours ago", unread: false },
-  ]
+
 
   const roleBasedLinks = user?.role === "owner" ? ownerLinks : user?.role === "renter" ? renterLinks : []
 
@@ -116,33 +145,32 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 group">
-           <img src={logo} className="h-10 w-10" alt="logo" />
+            <img src={logo} className="h-10 w-10" alt="logo" />
             <div className="hidden sm:block">
-               <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
                 Epic Journey
               </span>
               <div className="text-xs text-gray-500 -mt-1">Rentals</div>
             </div>
           </Link>
 
-         
+
           <nav className="hidden lg:flex items-center space-x-1">
             {commonLinks.slice(0, 3).map((link) => (
               <Link
                 key={link.name}
                 to={link.path}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  location.pathname === link.path
+                className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${location.pathname === link.path
                     ? "bg-blue-100 text-blue-700"
                     : "text-gray-700 hover:bg-gray-100 hover:text-blue-600"
-                }`}
+                  }`}
               >
                 {link.icon}
                 <span>{link.name}</span>
               </Link>
             ))}
 
-           
+
           </nav>
 
           {/* Search Bar */}
@@ -181,7 +209,7 @@ const Navbar = () => {
                     className="relative p-2 text-gray-600 hover:text-blue-600 hover:bg-gray-100 rounded-lg transition-colors"
                   >
                     <Bell className="w-5 h-5" />
-                    {notifications.some((n) => n.unread) && (
+                    {notifications.some((n) => !n.isRead) && (
                       <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
                     )}
                   </button>
@@ -193,17 +221,25 @@ const Navbar = () => {
                         <h3 className="font-semibold text-gray-900">Notifications</h3>
                       </div>
                       <div className="max-h-64 overflow-y-auto">
-                        {notifications.map((notification) => (
-                          <div
-                            key={notification.id}
-                            className={`p-4 border-b border-gray-50 hover:bg-gray-50 transition-colors ${
-                              notification.unread ? "bg-blue-50" : ""
-                            }`}
-                          >
-                            <p className="text-sm text-gray-900">{notification.message}</p>
-                            <p className="text-xs text-gray-500 mt-1">{notification.time}</p>
-                          </div>
-                        ))}
+                        {loadingNotifications ? (
+                          <div className="p-4 text-sm text-gray-500">Loading...</div>
+                        ) : notifications.length === 0 ? (
+                          <div className="p-4 text-sm text-gray-500">No notifications</div>
+                        ) : (
+                          notifications.map((notification) => (
+                            <div
+                              key={notification._id}
+                              className={`p-4 border-b border-gray-50 hover:bg-gray-50 transition-colors ${!notification.isRead ? "bg-blue-50" : ""
+                                }`}
+                            >
+                              <p className="text-sm text-gray-900">{notification.message}</p>
+                              <p className="text-xs text-gray-500 mt-1">
+                                {new Date(notification.timestamp).toLocaleString()}
+                              </p>
+                            </div>
+                          ))
+                        )}
+
                       </div>
                       <div className="p-3 border-t border-gray-100">
                         <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
@@ -356,11 +392,10 @@ const Navbar = () => {
                   key={link.name}
                   to={link.path}
                   onClick={() => setMenuOpen(false)}
-                  className={`flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    location.pathname === link.path
+                  className={`flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${location.pathname === link.path
                       ? "bg-blue-100 text-blue-700"
                       : "text-gray-700 hover:bg-gray-100 hover:text-blue-600"
-                  }`}
+                    }`}
                 >
                   {link.icon}
                   <span>{link.name}</span>
