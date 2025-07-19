@@ -43,6 +43,7 @@ const Inbox = () => {
     const otherUserId = msg.senderId === currentUserId ? msg.receiverId : msg.senderId
     navigate(`/chat/${otherUserId}`)
   }
+  
 
   const displayedConversations = conversations
 

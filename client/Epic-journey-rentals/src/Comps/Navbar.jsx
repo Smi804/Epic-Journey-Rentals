@@ -57,7 +57,7 @@ const Navbar = () => {
         if (!res.ok) {
           throw new Error(data.message || "Failed to fetch notifications");
         }
-        setNotifications(data.notifications.reverse() || []);
+        setNotifications((data || []).reverse());
       } catch (error) {
         console.error("Error fetching notifications:", error);
         toast.error("Failed to load notifications. Please reload and check internet.");
@@ -227,6 +227,7 @@ const Navbar = () => {
                           <div className="p-4 text-sm text-gray-500">No notifications</div>
                         ) : (
                           notifications.map((notification) => (
+                            <Link to={notification.link || "#"}>
                             <div
                               key={notification._id}
                               className={`p-4 border-b border-gray-50 hover:bg-gray-50 transition-colors ${!notification.isRead ? "bg-blue-50" : ""
@@ -237,14 +238,15 @@ const Navbar = () => {
                                 {new Date(notification.timestamp).toLocaleString()}
                               </p>
                             </div>
+                            </Link>
                           ))
                         )}
 
                       </div>
                       <div className="p-3 border-t border-gray-100">
-                        <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                        <Link to="/notifications" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
                           View all notifications
-                        </button>
+                        </Link>
                       </div>
                     </div>
                   )}

@@ -1,4 +1,4 @@
-import {createNotification} from "../utils/createNotification.js"; 
+import {createNotification} from "./notificationController.js"; 
 import Booking from "../models/Booking.js";
 import Listing from "../models/Listing.js";
 

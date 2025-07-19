@@ -27,7 +27,6 @@ const Listings = () => {
   const [sortBy, setSortBy] = useState("newest")
   const [viewMode, setViewMode] = useState("grid")
   const [showFilters, setShowFilters] = useState(false)
-  const [favorites, setFavorites] = useState(new Set())
   const navigate = useNavigate()
 
   const categories = [
@@ -51,11 +50,7 @@ const Listings = () => {
     const fetchListings = async () => {
       setLoading(true)
       const token = localStorage.getItem("token") || null
-      /* if (!token) {
-        toast.error("You must be logged in to view listings")
-        navigate("/auth")
-        return
-      } */
+      
       try {
         const res = await fetch("http://localhost:5000/api/listings", {
           headers: {
@@ -128,18 +123,7 @@ const Listings = () => {
     setFilteredListings(filtered)
   }, [listings, searchTerm, selectedCategory, priceRange, sortBy])
 
-  const toggleFavorite = (listingId) => {
-    const newFavorites = new Set(favorites)
-    if (newFavorites.has(listingId)) {
-      newFavorites.delete(listingId)
-      toast.success("Removed from favorites")
-    } else {
-      newFavorites.add(listingId)
-      toast.success("Added to favorites")
-    }
-    setFavorites(newFavorites)
-  }
-
+  
   const clearFilters = () => {
     setSearchTerm("")
     setSelectedCategory("all")
@@ -159,15 +143,7 @@ const Listings = () => {
           alt={listing.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
-        <button
-          onClick={(e) => {
-            e.preventDefault()
-            toggleFavorite(listing._id)
-          }}
-          className="absolute top-3 right-3 p-2 bg-white/80 backdrop-blur-sm rounded-full hover:bg-white transition-colors"
-        >
-          <Heart className={`w-4 h-4 ${favorites.has(listing._id) ? "fill-red-500 text-red-500" : "text-gray-600"}`} />
-        </button>
+       
         {listing.featured && (
           <div className="absolute top-3 left-3 bg-blue-600 text-white px-2 py-1 rounded-full text-xs font-medium">
             Featured

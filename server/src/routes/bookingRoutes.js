@@ -9,7 +9,7 @@ import {
 } from "../controllers/bookingController.js";
 
 const router = express.Router();
-router.post("/", verifyToken, requireRole("renter"), createBooking);
+router.post("/", verifyToken, createBooking);
 router.get("/", verifyToken, requireRole("renter"), getBookingsByRenter);
 router.get("/:ownerId", verifyToken, requireRole("owner"), getBookingByOwner);
 router.patch("/:id/status",verifyToken, requireRole("owner"),updateBookingStatus);

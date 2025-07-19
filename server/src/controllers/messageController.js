@@ -1,9 +1,21 @@
 import Message from "../models/Message.js";
+import User from "../models/User.js";
+import {createNotification} from "./notificationController.js";
+
 
 export const createMessage = async (req, res) => {
   try {
     const msg = await Message.create(req.body);
+    const {senderId,receiverId}=req.body;
+    const sender = await User.findById(senderId).select("fullname email");
+    
     res.status(201).json(msg);
+      await createNotification({
+      userId: receiverId,
+      type: "message",
+      message: `New message from ${sender?.fullname || "a user"}`, 
+      link: `/chat/${senderId}`, 
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

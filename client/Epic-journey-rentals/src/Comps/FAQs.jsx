@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { ChevronDown, ChevronUp, Shield, Zap, Users, CreditCard, MapPin, Star, AlertCircle } from "lucide-react"
 
