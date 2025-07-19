@@ -19,8 +19,6 @@ import {
 import toast from "react-hot-toast"
 import Navbar from "../Comps/Navbar"
 import Footer from "../Comps/Footer"
-import FAQs from "../Comps/Faqs"
-
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -274,7 +272,6 @@ const Contact = () => {
                   </button>
                 </form>
               </div>
-              <FAQs />
             </div>
 
             {/* Sidebar */}
