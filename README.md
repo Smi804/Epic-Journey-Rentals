@@ -77,8 +77,5 @@ This is a personal FYP project, but feel free to fork and build on it.
 
 ## 📸 Screenshots
 
-> Add screenshots here showing:
-
-Home page
 <img width="754" height="421" alt="ej" src="https://github.com/user-attachments/assets/70943735-2d09-4f40-b674-cb5b79ce923a" />
  
